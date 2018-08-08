@@ -1,17 +1,14 @@
-FROM golang:alpine
+FROM alpine:latest
 MAINTAINER "Jakub Knejzlik <jakub.knejzlik@inloopx.com>"
 
 ENV TERRAFORM_VERSION=0.10.0
+ENV TERRAFORM_SHA256SUM=f991039e3822f10d6e05eabf77c9f31f3831149b52ed030775b6ec5195380999
 
-RUN apk add --update git bash openssh
+RUN apk add --update git curl openssh && \
+    curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip > terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
+    echo "${TERRAFORM_SHA256SUM}  terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > terraform_${TERRAFORM_VERSION}_SHA256SUMS && \
+    sha256sum -cs terraform_${TERRAFORM_VERSION}_SHA256SUMS && \
+    unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /bin && \
+    rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
-ENV TF_DEV=true
-ENV TF_RELEASE=true
-
-WORKDIR $GOPATH/src/github.com/hashicorp/terraform
-RUN git clone https://github.com/hashicorp/terraform.git ./ && \
-    git checkout v${TERRAFORM_VERSION} && \
-    /bin/bash scripts/build.sh
-
-WORKDIR $GOPATH
 ENTRYPOINT []
