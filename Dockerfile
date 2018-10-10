@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM golang:alpine
 MAINTAINER "Jakub Knejzlik <jakub.knejzlik@inloopx.com>"
 
 ENV TERRAFORM_VERSION=0.10.0
